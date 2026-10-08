@@ -1,0 +1,60 @@
+{
+  "benchmark": "b4_recursive",
+  "functions": [
+    {
+      "back_edges": [],
+      "blocks": [
+        {
+          "label": "10",
+          "live_in": [],
+          "live_out": [],
+          "loop_depth": 0,
+          "pressure": 1
+        },
+        {
+          "label": "3",
+          "live_in": [
+            "%0"
+          ],
+          "live_out": [
+            "%0"
+          ],
+          "loop_depth": 0,
+          "pressure": 1
+        },
+        {
+          "label": "4",
+          "live_in": [
+            "%0"
+          ],
+          "live_out": [
+            "%9"
+          ],
+          "loop_depth": 0,
+          "pressure": 2
+        },
+        {
+          "label": "<implicit_entry>",
+          "live_in": [],
+          "live_out": [
+            "%0"
+          ],
+          "loop_depth": 0,
+          "pressure": 2
+        }
+      ],
+      "edges": [
+        "3->10",
+        "4->10",
+        "<implicit_entry>->3",
+        "<implicit_entry>->4"
+      ],
+      "interference": {
+        "edge_count": 5,
+        "max_pressure": 2,
+        "node_count": 8
+      },
+      "name": "fibonacci"
+    }
+  ]
+}

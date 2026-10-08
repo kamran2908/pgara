@@ -1,0 +1,158 @@
+{
+  "benchmark": "b5_rare_error",
+  "functions": [
+    {
+      "back_edges": [
+        "18->3"
+      ],
+      "blocks": [
+        {
+          "label": "10",
+          "live_in": [
+            "%.0",
+            "%.01",
+            "%.02",
+            "%0",
+            "%1"
+          ],
+          "live_out": [
+            "%.0",
+            "%.02",
+            "%0",
+            "%1",
+            "%11"
+          ],
+          "loop_depth": 1,
+          "pressure": 5
+        },
+        {
+          "label": "12",
+          "live_in": [
+            "%.0",
+            "%.02",
+            "%0",
+            "%1"
+          ],
+          "live_out": [
+            "%.0",
+            "%.1",
+            "%0",
+            "%1",
+            "%17"
+          ],
+          "loop_depth": 1,
+          "pressure": 6
+        },
+        {
+          "label": "18",
+          "live_in": [
+            "%.0",
+            "%.1",
+            "%0",
+            "%1",
+            "%17"
+          ],
+          "live_out": [
+            "%.1",
+            "%0",
+            "%1",
+            "%17",
+            "%19"
+          ],
+          "loop_depth": 1,
+          "pressure": 5
+        },
+        {
+          "label": "20",
+          "live_in": [
+            "%.01",
+            "%.02"
+          ],
+          "live_out": [],
+          "loop_depth": 0,
+          "pressure": 2
+        },
+        {
+          "label": "3",
+          "live_in": [
+            "%0",
+            "%1"
+          ],
+          "live_out": [
+            "%.0",
+            "%.01",
+            "%.02",
+            "%0",
+            "%1"
+          ],
+          "loop_depth": 1,
+          "pressure": 6
+        },
+        {
+          "label": "5",
+          "live_in": [
+            "%.0",
+            "%.01",
+            "%.02",
+            "%0",
+            "%1"
+          ],
+          "live_out": [
+            "%.0",
+            "%.01",
+            "%.02",
+            "%0",
+            "%1"
+          ],
+          "loop_depth": 1,
+          "pressure": 6
+        },
+        {
+          "label": "<implicit_entry>",
+          "live_in": [],
+          "live_out": [
+            "%0",
+            "%1"
+          ],
+          "loop_depth": 0,
+          "pressure": 2
+        }
+      ],
+      "edges": [
+        "10->12",
+        "12->18",
+        "18->3",
+        "3->20",
+        "3->5",
+        "5->10",
+        "5->12",
+        "<implicit_entry>->3"
+      ],
+      "interference": {
+        "edge_count": 71,
+        "max_pressure": 6,
+        "node_count": 19
+      },
+      "name": "compute"
+    },
+    {
+      "back_edges": [],
+      "blocks": [
+        {
+          "label": "<implicit_entry>",
+          "live_in": [],
+          "live_out": [],
+          "loop_depth": 0,
+          "pressure": 1
+        }
+      ],
+      "edges": [],
+      "interference": {
+        "edge_count": 0,
+        "max_pressure": 1,
+        "node_count": 1
+      },
+      "name": "log_error"
+    }
+  ]
+}

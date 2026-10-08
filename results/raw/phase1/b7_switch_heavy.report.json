@@ -1,0 +1,142 @@
+{
+  "benchmark": "b7_switch_heavy",
+  "functions": [
+    {
+      "back_edges": [],
+      "blocks": [
+        {
+          "label": "10",
+          "live_in": [
+            "%1",
+            "%2"
+          ],
+          "live_out": [
+            "%12"
+          ],
+          "loop_depth": 0,
+          "pressure": 2
+        },
+        {
+          "label": "13",
+          "live_in": [
+            "%1",
+            "%2"
+          ],
+          "live_out": [
+            "%14"
+          ],
+          "loop_depth": 0,
+          "pressure": 2
+        },
+        {
+          "label": "15",
+          "live_in": [
+            "%1",
+            "%2"
+          ],
+          "live_out": [
+            "%16"
+          ],
+          "loop_depth": 0,
+          "pressure": 2
+        },
+        {
+          "label": "17",
+          "live_in": [
+            "%1",
+            "%2"
+          ],
+          "live_out": [
+            "%18"
+          ],
+          "loop_depth": 0,
+          "pressure": 2
+        },
+        {
+          "label": "19",
+          "live_in": [],
+          "live_out": [],
+          "loop_depth": 0,
+          "pressure": 0
+        },
+        {
+          "label": "20",
+          "live_in": [],
+          "live_out": [],
+          "loop_depth": 0,
+          "pressure": 1
+        },
+        {
+          "label": "4",
+          "live_in": [
+            "%1",
+            "%2"
+          ],
+          "live_out": [
+            "%5"
+          ],
+          "loop_depth": 0,
+          "pressure": 2
+        },
+        {
+          "label": "6",
+          "live_in": [
+            "%1",
+            "%2"
+          ],
+          "live_out": [
+            "%7"
+          ],
+          "loop_depth": 0,
+          "pressure": 2
+        },
+        {
+          "label": "8",
+          "live_in": [
+            "%1",
+            "%2"
+          ],
+          "live_out": [
+            "%9"
+          ],
+          "loop_depth": 0,
+          "pressure": 2
+        },
+        {
+          "label": "<implicit_entry>",
+          "live_in": [],
+          "live_out": [
+            "%1",
+            "%2"
+          ],
+          "loop_depth": 0,
+          "pressure": 3
+        }
+      ],
+      "edges": [
+        "10->20",
+        "13->20",
+        "15->20",
+        "17->20",
+        "19->20",
+        "4->20",
+        "6->20",
+        "8->20",
+        "<implicit_entry>->10",
+        "<implicit_entry>->13",
+        "<implicit_entry>->15",
+        "<implicit_entry>->17",
+        "<implicit_entry>->19",
+        "<implicit_entry>->4",
+        "<implicit_entry>->6",
+        "<implicit_entry>->8"
+      ],
+      "interference": {
+        "edge_count": 4,
+        "max_pressure": 3,
+        "node_count": 12
+      },
+      "name": "process_opcode"
+    }
+  ]
+}
