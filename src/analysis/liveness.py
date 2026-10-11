@@ -1,4 +1,4 @@
-from typing import Set, Dict, List
+from typing import Set, Dict, List, Tuple
 from src.ir.models import Function, BasicBlock, Value
 from src.ir.cfg import CFGBuilder
 from src.analysis.loop import LoopAnalyzer
