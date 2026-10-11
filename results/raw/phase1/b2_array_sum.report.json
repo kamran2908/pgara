@@ -87,7 +87,10 @@
         "max_pressure": 5,
         "node_count": 10
       },
-      "name": "sum_array"
+      "is_irreducible": false,
+      "name": "sum_array",
+      "unreachable_blocks": []
     }
-  ]
+  ],
+  "schema_version": 1
 }

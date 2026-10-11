@@ -75,10 +75,12 @@ def export_dot(func: Function, res: InterferenceResult) -> str:
     lines = [f"graph IG_{func.name.replace('@', '')} {{"]
     for n in sorted(res.graph.nodes(), key=lambda v: v.name):
         lines.append(f'  "{n.name}";')
-    for u, v in sorted(res.graph.edges(), key=lambda e: (e[0].name, e[1].name)):
-        if u.name > v.name:
-            u, v = v, u
-        lines.append(f'  "{u.name}" -- "{v.name}";')
+    edges = set()
+    for u, v in res.graph.edges():
+        u_name, v_name = (u.name, v.name) if u.name < v.name else (v.name, u.name)
+        edges.add((u_name, v_name))
+    for u_name, v_name in sorted(edges):
+        lines.append(f'  "{u_name}" -- "{v_name}";')
     lines.append("}")
     return "\n".join(lines)
 

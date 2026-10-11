@@ -136,7 +136,10 @@
         "max_pressure": 3,
         "node_count": 12
       },
-      "name": "process_opcode"
+      "is_irreducible": false,
+      "name": "process_opcode",
+      "unreachable_blocks": []
     }
-  ]
+  ],
+  "schema_version": 1
 }

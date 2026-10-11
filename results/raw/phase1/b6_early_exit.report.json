@@ -118,7 +118,10 @@
         "max_pressure": 5,
         "node_count": 11
       },
-      "name": "find_value"
+      "is_irreducible": false,
+      "name": "find_value",
+      "unreachable_blocks": []
     }
-  ]
+  ],
+  "schema_version": 1
 }

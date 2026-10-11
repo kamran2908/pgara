@@ -54,7 +54,10 @@
         "max_pressure": 2,
         "node_count": 8
       },
-      "name": "fibonacci"
+      "is_irreducible": false,
+      "name": "fibonacci",
+      "unreachable_blocks": []
     }
-  ]
+  ],
+  "schema_version": 1
 }

@@ -18,7 +18,10 @@
         "max_pressure": 4,
         "node_count": 11
       },
-      "name": "compute_arithmetic"
+      "is_irreducible": false,
+      "name": "compute_arithmetic",
+      "unreachable_blocks": []
     }
-  ]
+  ],
+  "schema_version": 1
 }

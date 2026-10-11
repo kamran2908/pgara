@@ -133,7 +133,9 @@
         "max_pressure": 6,
         "node_count": 19
       },
-      "name": "compute"
+      "is_irreducible": false,
+      "name": "compute",
+      "unreachable_blocks": []
     },
     {
       "back_edges": [],
@@ -152,7 +154,10 @@
         "max_pressure": 1,
         "node_count": 1
       },
-      "name": "log_error"
+      "is_irreducible": false,
+      "name": "log_error",
+      "unreachable_blocks": []
     }
-  ]
+  ],
+  "schema_version": 1
 }

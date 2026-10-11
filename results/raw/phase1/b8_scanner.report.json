@@ -211,7 +211,10 @@
         "max_pressure": 6,
         "node_count": 25
       },
-      "name": "count_tokens"
+      "is_irreducible": false,
+      "name": "count_tokens",
+      "unreachable_blocks": []
     }
-  ]
+  ],
+  "schema_version": 1
 }
