@@ -1,4 +1,5 @@
 import glob
+from pathlib import Path
 import pytest
 from src.ir.models import Function, BasicBlock, Instruction, Value
 from src.ir.parser import parse_module
@@ -115,14 +116,15 @@ def test_hand_dead_value():
     assert vd not in b1.live_in
 
 def test_integration_every_parsed_benchmark():
-    files = glob.glob("results/raw/ir/*.mem2reg.ll")
-    if not files:
-        pytest.skip("No IR files found")
+    repo_root = Path(__file__).resolve().parent.parent
+    ir_dir = repo_root / "results" / "raw" / "ir"
+    files = sorted(ir_dir.glob("*.mem2reg.ll"))
+    assert len(files) > 0, f"No mem2reg IR files found in {ir_dir}"
         
     funcs_checked = 0
     blocks_checked = 0
     for f in files:
-        mod = parse_module(f)
+        mod = parse_module(str(f))
         for func in mod.functions:
             CFGBuilder.build(func)
             warnings = LivenessAnalyzer.analyze(func)

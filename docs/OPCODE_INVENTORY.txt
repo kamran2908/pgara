@@ -1,0 +1,56 @@
+# PGARA Phase 1 LLVM IR Opcode Inventory
+# Note: Raw IR lists 'alloca' as unsupported by design, as the PGARA parser
+# operates exclusively on mem2reg-promoted IR where all allocas have been eliminated.
+
+=== RAW IR (results/raw/ir/*.raw.ll) ===
+Opcodes by frequency:
+  load            : 102
+  store           : 66
+  br              : 50
+  alloca          : 41
+  add             : 24
+  icmp            : 14
+  sext            : 13
+  getelementptr   : 9
+  ret             : 9
+  mul             : 7
+  sub             : 4
+  call            : 3
+  sdiv            : 2
+  and             : 1
+  or              : 1
+  switch          : 1
+  xor             : 1
+
+Present but unsupported in Raw IR:
+  alloca (41)
+
+Supported but never seen in Raw IR:
+  phi
+  unreachable
+
+=== MEM2REG IR (results/raw/ir/*.mem2reg.ll) ===
+Opcodes by frequency:
+  br              : 50
+  add             : 24
+  phi             : 21
+  icmp            : 14
+  sext            : 13
+  getelementptr   : 9
+  ret             : 9
+  load            : 8
+  mul             : 7
+  sub             : 4
+  call            : 3
+  sdiv            : 2
+  and             : 1
+  or              : 1
+  store           : 1
+  switch          : 1
+  xor             : 1
+
+Present but unsupported in Mem2Reg IR:
+  (none)
+
+Supported but never seen in Mem2Reg IR:
+  unreachable

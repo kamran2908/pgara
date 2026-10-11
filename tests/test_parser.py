@@ -1,5 +1,6 @@
 import os
 import glob
+from pathlib import Path
 import tempfile
 import pytest
 from src.ir.parser import parse_module, parse_instruction, ParseError
@@ -78,12 +79,13 @@ define void @test(i32 %0, ptr %1) {
         os.remove(temp_name)
 
 def test_integration_mem2reg_files():
-    files = glob.glob("results/raw/ir/*.mem2reg.ll")
-    if not files:
-        pytest.skip("No mem2reg IR files found")
+    repo_root = Path(__file__).resolve().parent.parent
+    ir_dir = repo_root / "results" / "raw" / "ir"
+    files = sorted(ir_dir.glob("*.mem2reg.ll"))
+    assert len(files) > 0, f"No mem2reg IR files found in {ir_dir}"
         
     for f in files:
-        mod = parse_module(f)
+        mod = parse_module(str(f))
         for func in mod.functions:
             # Gather defined locals
             defined_locals = {arg.name for arg in func.arguments}
@@ -121,3 +123,70 @@ def test_integration_mem2reg_files():
                     # Check uses
                     for use in inst.uses():
                         assert use.name in defined_locals, f"Value {use.name} used but not defined in {f} ({func.name})"
+
+def test_parse_error_unsupported_opcode(tmp_path):
+    """
+    Assert unsupported opcode 'fadd' raises ParseError with hand-derived message format:
+    f"Unsupported opcode '{opcode}' at {filepath}:{line_num}\n{line}"
+    """
+    ll_file = tmp_path / "test_unsupported.ll"
+    line_text = "%res = fadd double %a, %b"
+    content = f"define double @foo(double %a, double %b) {{\n  {line_text}\n  ret double %res\n}}\n"
+    ll_file.write_text(content, encoding="utf-8")
+    
+    with pytest.raises(ParseError) as exc_info:
+        parse_module(str(ll_file))
+        
+    msg = str(exc_info.value)
+    expected_header = f"Unsupported opcode 'fadd' at {ll_file}:2"
+    assert expected_header in msg
+    assert line_text in msg
+
+def test_parse_error_no_parsable_opcode(tmp_path):
+    """
+    Assert a line with no parsable opcode raises ParseError with hand-derived message format:
+    f"Cannot parse opcode at {filepath}:{line_num}\n{line}"
+    """
+    ll_file = tmp_path / "test_no_opcode.ll"
+    line_text = "%res = 12345"
+    content = f"define void @foo() {{\n  {line_text}\n  ret void\n}}\n"
+    ll_file.write_text(content, encoding="utf-8")
+    
+    with pytest.raises(ParseError) as exc_info:
+        parse_module(str(ll_file))
+        
+    msg = str(exc_info.value)
+    expected_header = f"Cannot parse opcode at {ll_file}:2"
+    assert expected_header in msg
+    assert line_text in msg
+
+def test_all_mem2reg_opcodes_are_supported():
+    """Verify every opcode appearing in committed mem2reg IR files is in SUPPORTED_OPCODES."""
+    import re
+    from src.ir.parser import SUPPORTED_OPCODES
+    
+    repo_root = Path(__file__).resolve().parent.parent
+    ir_dir = repo_root / "results" / "raw" / "ir"
+    files = sorted(ir_dir.glob("*.mem2reg.ll"))
+    assert len(files) > 0, f"No mem2reg IR files found in {ir_dir}"
+    
+    for f in files:
+        with open(f, "r", encoding="utf-8") as fp:
+            in_fn = False
+            for line in fp:
+                clean = line.split(";", 1)[0].strip()
+                if clean.startswith("define "):
+                    in_fn = True
+                    continue
+                if clean == "}":
+                    in_fn = False
+                    continue
+                if not in_fn or not clean:
+                    continue
+                if re.match(r"^[A-Za-z0-9_.]+:$", clean):
+                    continue
+                m = re.match(r"^(?:%[A-Za-z0-9_.]+\s*=\s*)?([a-z]+)\b", clean)
+                if m:
+                    op = m.group(1)
+                    assert op in SUPPORTED_OPCODES, f"Opcode '{op}' in {f} is not in SUPPORTED_OPCODES"
+

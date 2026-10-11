@@ -1,4 +1,5 @@
 import glob
+from pathlib import Path
 import pytest
 from src.ir.models import Function, BasicBlock, Instruction
 from src.ir.cfg import CFGBuilder, CFGValidationException
@@ -84,12 +85,13 @@ def test_unreachable_block():
     assert any("Unreachable" in w for w in warnings)
     
 def test_integration_every_parsed_benchmark():
-    files = glob.glob("results/raw/ir/*.mem2reg.ll")
-    if not files:
-        pytest.skip("No IR files found")
+    repo_root = Path(__file__).resolve().parent.parent
+    ir_dir = repo_root / "results" / "raw" / "ir"
+    files = sorted(ir_dir.glob("*.mem2reg.ll"))
+    assert len(files) > 0, f"No mem2reg IR files found in {ir_dir}"
         
     for f in files:
-        mod = parse_module(f)
+        mod = parse_module(str(f))
         for func in mod.functions:
             warnings = CFGBuilder.build(func)
             # The validation logic inside build() ensures symmetry and valid targets
