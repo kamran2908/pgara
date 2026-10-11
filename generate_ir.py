@@ -4,9 +4,7 @@ import subprocess
 import re
 from collections import Counter
 import glob
-
-CLANG = r"C:\LLVM-23.1.3\clang+llvm-23.1.3-x86_64-pc-windows-msvc\bin\clang.exe"
-OPT = r"C:\LLVM-23.1.3\clang+llvm-23.1.3-x86_64-pc-windows-msvc\bin\opt.exe"
+from src.toolchain import resolve_toolchain
 
 def run_cmd(cmd):
     result = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8')
@@ -32,6 +30,8 @@ def main():
         print("No benchmarks found.")
         sys.exit(1)
 
+    clang, opt = resolve_toolchain()
+
     out_dir = os.path.join("results", "raw", "ir")
     os.makedirs(out_dir, exist_ok=True)
 
@@ -45,16 +45,16 @@ def main():
         # 1. Clang -O0 -S -emit-llvm
         # We add -Xclang -disable-O0-optnone based on our earlier investigation
         # otherwise mem2reg does absolutely nothing.
-        clang_cmd = [CLANG, "-O0", "-Xclang", "-disable-O0-optnone", "-S", "-emit-llvm", c_file, "-o", raw_ll]
+        clang_cmd = [clang, "-O0", "-S", "-emit-llvm", "-Xclang", "-disable-O0-optnone", c_file, "-o", raw_ll]
         run_cmd(clang_cmd)
 
         # 2. Opt mem2reg
         # We use -passes=mem2reg for modern LLVM.
-        opt_cmd = [OPT, "-passes=mem2reg", "-S", raw_ll, "-o", mem2reg_ll]
+        opt_cmd = [opt, "-passes=mem2reg", "-S", raw_ll, "-o", mem2reg_ll]
         run_cmd(opt_cmd)
 
         # 3. Verify
-        verify_cmd = [OPT, "-passes=verify", mem2reg_ll]
+        verify_cmd = [opt, "-passes=verify", mem2reg_ll]
         run_cmd(verify_cmd)
 
         # 4. Count alloca and phi

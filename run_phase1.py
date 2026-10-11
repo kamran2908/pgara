@@ -8,13 +8,15 @@ from src.ir.cfg import CFGBuilder
 from src.analysis.loop import LoopAnalyzer
 from src.analysis.liveness import LivenessAnalyzer
 from src.analysis.interference import InterferenceAnalyzer
+from src.toolchain import resolve_toolchain
 
 def run_cmd(cmd):
     try:
-        subprocess.run(cmd, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except subprocess.CalledProcessError as e:
-        print(f"Error running: {cmd}")
-        print(f"Stderr: {e.stderr.decode()}")
+        print(f"Error running: {' '.join(cmd)}")
+        stderr_str = e.stderr.decode('utf-8', errors='replace') if isinstance(e.stderr, bytes) else str(e.stderr)
+        print(f"Stderr: {stderr_str}")
         sys.exit(1)
 
 def main():
@@ -23,6 +25,8 @@ def main():
     if not benchmarks:
         print("No benchmarks found!")
         sys.exit(1)
+
+    clang, opt = resolve_toolchain()
 
     print(f"{'Benchmark':<20} | {'Funcs':<5} | {'Blocks':<6} | {'Back-Edges':<10} | {'Max Depth':<9} | {'IG Nodes':<8} | {'IG Edges':<8} | {'Max Pressure':<12}")
     print("-" * 95)
@@ -34,11 +38,8 @@ def main():
         raw_ll = f"results/raw/phase1/{b_name}.raw.ll"
         mem2reg_ll = f"results/raw/phase1/{b_name}.mem2reg.ll"
         
-        CLANG = r"C:\LLVM-23.1.3\clang+llvm-23.1.3-x86_64-pc-windows-msvc\bin\clang.exe"
-        OPT = r"C:\LLVM-23.1.3\clang+llvm-23.1.3-x86_64-pc-windows-msvc\bin\opt.exe"
-        
-        run_cmd(f'"{CLANG}" -O0 -S -emit-llvm -Xclang -disable-O0-optnone {b} -o {raw_ll}')
-        run_cmd(f'"{OPT}" -passes=mem2reg -S {raw_ll} -o {mem2reg_ll}')
+        run_cmd([clang, "-O0", "-S", "-emit-llvm", "-Xclang", "-disable-O0-optnone", b, "-o", raw_ll])
+        run_cmd([opt, "-passes=mem2reg", "-S", raw_ll, "-o", mem2reg_ll])
         
         # 2. Parse & Analyze
         try:
