@@ -12,3 +12,6 @@ __pycache__/
 venv/
 env/
 ENV/
+
+# Demo outputs
+demo_out/
