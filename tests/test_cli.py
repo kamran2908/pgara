@@ -1,6 +1,7 @@
 import os
 import sys
 import subprocess
+import pathlib
 import pytest
 
 from src.ir.parser import parse_module
@@ -8,6 +9,8 @@ from src.ir.cfg import CFGBuilder
 from src.analysis.loop import LoopAnalyzer
 from src.analysis.liveness import LivenessAnalyzer, dump_liveness
 from src.analysis.interference import InterferenceAnalyzer, export_dot
+
+REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
 
 OPT_FALLBACK = r"C:\LLVM-23.1.3\clang+llvm-23.1.3-x86_64-pc-windows-msvc\bin\opt.exe"
 if "PGARA_OPT" not in os.environ and os.path.isfile(OPT_FALLBACK):
@@ -24,9 +27,10 @@ def _toolchain_available():
 
 def test_cli_help():
     proc = subprocess.run(
-        [sys.executable, "run_phase1.py", "--help"],
+        [sys.executable, str(REPO_ROOT / "run_phase1.py"), "--help"],
         capture_output=True,
-        text=True
+        text=True,
+        cwd=REPO_ROOT,
     )
     assert proc.returncode == 0
     assert "usage:" in proc.stdout.lower()
@@ -36,9 +40,10 @@ def test_cli_help():
 
 def test_cli_unknown_benchmark():
     proc = subprocess.run(
-        [sys.executable, "run_phase1.py", "nonexistent"],
+        [sys.executable, str(REPO_ROOT / "run_phase1.py"), "nonexistent"],
         capture_output=True,
-        text=True
+        text=True,
+        cwd=REPO_ROOT,
     )
     assert proc.returncode == 2
     assert "Unknown benchmark" in proc.stderr
@@ -47,10 +52,11 @@ def test_cli_unknown_benchmark():
 @pytest.mark.skipif(not _toolchain_available(), reason="LLVM toolchain (clang/opt) not found in PATH or environment")
 def test_cli_dump_liveness(tmp_path):
     proc = subprocess.run(
-        [sys.executable, "run_phase1.py", "--dump", "liveness", "b2_array_sum", "--out-dir", str(tmp_path)],
+        [sys.executable, str(REPO_ROOT / "run_phase1.py"), "--dump", "liveness", "b2_array_sum", "--out-dir", str(tmp_path)],
         capture_output=True,
         text=True,
-        check=True
+        check=True,
+        cwd=REPO_ROOT,
     )
     mem2reg_path = tmp_path / "b2_array_sum.mem2reg.ll"
     assert mem2reg_path.exists()
@@ -68,10 +74,11 @@ def test_cli_dump_liveness(tmp_path):
 @pytest.mark.skipif(not _toolchain_available(), reason="LLVM toolchain (clang/opt) not found in PATH or environment")
 def test_cli_dot(tmp_path):
     proc = subprocess.run(
-        [sys.executable, "run_phase1.py", "b2_array_sum", "--dot", "--out-dir", str(tmp_path)],
+        [sys.executable, str(REPO_ROOT / "run_phase1.py"), "b2_array_sum", "--dot", "--out-dir", str(tmp_path)],
         capture_output=True,
         text=True,
-        check=True
+        check=True,
+        cwd=REPO_ROOT,
     )
     mem2reg_path = tmp_path / "b2_array_sum.mem2reg.ll"
     assert mem2reg_path.exists()
