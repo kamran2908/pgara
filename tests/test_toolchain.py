@@ -6,8 +6,10 @@ from src.toolchain import resolve_tool, find_tool, ToolchainError, get_tool_vers
 def _create_fake_executable(dir_path, name):
     f1 = dir_path / name
     f1.write_text("#!/bin/sh\nexit 0\n")
+    os.chmod(f1, 0o755)
     f2 = dir_path / f"{name}.exe"
     f2.write_text("fake binary")
+    os.chmod(f2, 0o755)
     return str(f2) if sys.platform == "win32" else str(f1)
 
 def test_explicit_arg_priority(tmp_path, monkeypatch):

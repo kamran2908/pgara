@@ -62,7 +62,7 @@ Generates conflict graphs mapping concurrently active live values (instruction d
 Block-level metrics measure peak concurrency across intervals to determine register pressure dynamically. Dead definitions interfere at their definition point but are not counted in register pressure.
 
 ## 12. Testing and Verification
-The test suite consists of 50 Pytest test executions passing with 0 skips across Python 3.13 and Python 3.14. Liveness and interference analyses were compared against programmatic path-based oracles across 9 functions and 60 basic blocks spanning all 8 benchmarks. Note that these oracles reuse `LivenessAnalyzer.get_llvm_label()` and `Instruction.uses()` from the core infrastructure, so they are not completely independent implementations.
+The test suite consists of 51 Pytest test executions passing with 0 skips across Python 3.13 and Python 3.14. Liveness and interference analyses were compared against programmatic path-based oracles across 9 functions and 60 basic blocks spanning all 8 benchmarks. Note that these oracles reuse `LivenessAnalyzer.get_llvm_label()` and `Instruction.uses()` from the core infrastructure, so they are not completely independent implementations.
 
 ## 13. Determinism and Reproducibility
 Reports are byte-identical across runs when executed with the same LLVM compiler version. Phi register names in the generated IR depend on the LLVM version (for example, LLVM 18 produces different phi variable names than LLVM 23 in `b8_scanner`, though graph structure remains identical). Output files strictly conform to `results/raw/phase1/`.
@@ -95,4 +95,4 @@ Phase 1 does NOT implement:
 - LLVM allocator comparison
 
 ## 17. Final Phase 1 Status
-**FROZEN AND COMPLETE.**
+**Implementation complete; freeze pending final audit.**

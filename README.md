@@ -7,7 +7,7 @@ This repository contains the Phase 1 implementation of PGARA (Profile-Guided Ada
 - **Line-based IR Parsing**: Parses the resulting `.mem2reg.ll` LLVM IR text deterministically using a custom handwritten parser. No dependency on `llvmlite` or Python LLVM bindings.
 - **CFG Construction**: Builds the control flow graph containing basic blocks, terminator instructions, and explicit predecessor and successor edges.
 - **Loop Analysis**: Computes reachability and strict dominator trees to identify back-edges, merges natural loops sharing a header, and assigns block loop-nesting depths deterministically.
-- **Liveness Analysis**: Computes backwards data-flow fixed points (using reverse post-order traversal for rapid convergence), maintaining exact LLVM phi semantics (values are live-out to specific incoming edges, not unconditionally live-in).
+- **Liveness Analysis**: Computes backwards data-flow fixed points (using post-order traversal for rapid convergence; dump_liveness prints in reverse postorder for readability), maintaining exact LLVM phi semantics (values are live-out to specific incoming edges, not unconditionally live-in).
 - **Interference Graph Construction**: Calculates a conflict graph (no move exemptions). It walks liveness sets instruction-by-instruction backwards and treats phi groupings simultaneously to synthesize per-block register pressure data (highest number of simultaneously live virtual registers).
 - **Comprehensive Validation**: Every analysis is validated against path-based Oracle solvers across 9 functions and 60 basic blocks, tested with automated test suites.
 
@@ -230,7 +230,7 @@ The repository test suite is executed using `pytest`:
 python -m pytest -v -s
 ```
 
-All 50 tests execute deterministically against the committed IR and independent programmatic oracles.
+All 51 tests execute deterministically against the committed IR and independent programmatic oracles.
 
 ## Proposal Decisions (D1-D8) Implemented
 
@@ -240,7 +240,7 @@ Phase 1 strictly respects the proposal boundaries:
 - **D3 (Nodes)**: Nodes in the interference graph correspond strictly to allocatable virtual registers (function arguments and instruction results). Constants, immediate values, and global labels are excluded.
 - **D4 (DOT Export)**: Native textual DOT export via `src.analysis.interference.export_dot` without external Graphviz dependencies. Can be invoked from the CLI using `--dot`, writing `<out-dir>/<benchmark>.<function>.dot`.
 - **D5 (Language & Graph Library)**: Implemented in Python (verified on Python 3.13 and 3.14) using [NetworkX](https://networkx.org/) for interference graph modeling.
-- **D6 (Simultaneous Phi Semantics)**: All phi results at the start of a basic block are treated as defined simultaneously as a group. This prevents artificial interference edges between parallel phi definitions, while each phi operand is correctly associated with the exit of its corresponding predecessor basic block.
+- **D6 (Simultaneous Phi Semantics)**: The phi results defined at the top of a block are defined simultaneously, so they interfere with each other and with every other value live at that point.
 - **D7 (Dominator-Based Loop Analysis & Nesting Depth)**: Loops and back-edges are identified using dominator tree analysis. Back-edges $(u \to v)$ are detected where $v$ dominates $u$. Loops sharing the same header block are merged into natural loops, and hierarchical loop nesting depth is assigned deterministically to each basic block.
 - **D8 (Function Argument Interference at Entry)**: All function arguments are treated as simultaneously live and interfering with each other at function entry, even if an argument is unused in the body. This is a deliberate conservative design choice ensuring all incoming parameters are allocated distinct physical locations at entry.
 
