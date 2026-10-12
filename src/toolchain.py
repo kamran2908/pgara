@@ -64,7 +64,7 @@ def resolve_tool(tool_name: str, explicit_path: Optional[str] = None) -> str:
         sys.exit(1)
 
 def get_tool_version(tool_path: str) -> str:
-    """Returns the first non-empty line of `tool_path --version`."""
+    """Returns the version line of `tool_path --version`."""
     try:
         proc = subprocess.run(
             [tool_path, "--version"],
@@ -73,7 +73,12 @@ def get_tool_version(tool_path: str) -> str:
             check=True
         )
         lines = [line.strip() for line in proc.stdout.splitlines() if line.strip()]
-        return lines[0] if lines else "unknown version"
+        if not lines:
+            return "unknown version"
+        for line in lines:
+            if "LLVM version" in line:
+                return line
+        return lines[0]
     except Exception as err:
         return f"failed to get version: {err}"
 

@@ -90,7 +90,7 @@ python run_phase1.py
 ### Real Output (Default Run)
 ```text
 clang: C:\Program Files\LLVM\bin\clang.EXE (clang version 23.1.3 (https://github.com/llvm/llvm-project 0d261d1ca552c95a8f007e061c787ac7132fbcbc))
-opt  : C:\LLVM-23.1.3\clang+llvm-23.1.3-x86_64-pc-windows-msvc\bin\opt.exe (LLVM (http://llvm.org/):)
+opt  : C:\LLVM-23.1.3\clang+llvm-23.1.3-x86_64-pc-windows-msvc\bin\opt.exe (LLVM version 23.1.3)
 Benchmark            | Funcs | Blocks | Back-Edges | Max Depth | IG Nodes | IG Edges | Max Pressure
 -----------------------------------------------------------------------------------------------
 b1_straight_line     | 1     | 1      | 0          | 0         | 11       | 21       | 4           

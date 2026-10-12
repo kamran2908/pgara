@@ -1,7 +1,7 @@
 import os
 import sys
 import pytest
-from src.toolchain import resolve_tool, find_tool, ToolchainError
+from src.toolchain import resolve_tool, find_tool, ToolchainError, get_tool_version
 
 def _create_fake_executable(dir_path, name):
     f1 = dir_path / name
@@ -93,3 +93,13 @@ def test_find_tool_raises_toolchain_error(monkeypatch):
         find_tool("clang")
     assert "clang" in str(exc_info.value).lower()
     assert "PGARA_CLANG" in str(exc_info.value)
+
+def test_opt_version_extraction_picks_llvm_version_line(monkeypatch):
+    sample_banner = "LLVM (http://llvm.org/):\n  LLVM version 23.1.3\n  Optimized build."
+    class FakeProc:
+        stdout = sample_banner
+        returncode = 0
+    monkeypatch.setattr("subprocess.run", lambda *args, **kwargs: FakeProc())
+    version = get_tool_version("dummy_opt_path")
+    assert version == "LLVM version 23.1.3"
+
