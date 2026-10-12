@@ -47,7 +47,7 @@ pip install -r requirements.txt
 python -m pytest -v -s
 
 # 4. Run CLI on all benchmarks
-python run_phase1.py all
+python run_phase1.py
 
 # 5. Run CLI individually on each benchmark
 python run_phase1.py b1_straight_line

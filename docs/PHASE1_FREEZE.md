@@ -39,6 +39,8 @@ Frozen code commit: f101dd2bcf72835d5ffb86ecb6a0e32753c582be. This document and 
 | b8_scanner | 1 | 12 | 1 | 1 | 25 | 85 | 6 |
 
 ## 6. Tracked Files Covered by Checksums (docs/PHASE1_CHECKSUMS.txt)
+Checksums are SHA-256 of the committed (git blob) content, i.e. LF line endings, so they verify on any clone. Verify with: python tools/verify_checksums.py
+
 Total tracked files: 80
 
 - benchmarks/b1_straight_line.c
